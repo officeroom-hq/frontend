@@ -52,7 +52,7 @@ function DcFiles() {
         <div className="ml-auto flex items-center gap-2">
           <label className="relative">
             <Search size={12} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted" aria-hidden="true" />
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search files..." aria-label="Search files" className="h-7 w-44 rounded-md border border-line bg-white pl-7 pr-2 text-[11px] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-300" />
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search files..." aria-label="Search files" className="h-9 w-full sm:h-7 sm:w-44 rounded-md border border-line bg-white pl-7 pr-2 text-[11px] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-blue-300" />
           </label>
           <button type="button" className="flex h-7 items-center gap-1 rounded-md border border-line bg-white px-2 text-[11px] text-slate-600"><SlidersHorizontal size={12} aria-hidden="true" /> Filters <ChevronDown size={10} aria-hidden="true" /></button>
         </div>
@@ -220,7 +220,7 @@ export default function DataCenterPage() {
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-5">
+      <div className="mt-4 grid grid-cols-2 gap-3 [&>*:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-5 xl:[&>*:last-child:nth-child(odd)]:col-span-1">
         {stats.loading && !stats.data && <Loading rows={2} />}
         {stats.data?.map((s) => (
           <StatCard key={s.id} label={s.label} value={s.value} change={s.change} changeNote={s.changeNote} icon={s.icon} tone={s.tone} sparkline={s.sparkline} />

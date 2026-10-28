@@ -19,11 +19,11 @@ export function AppSidebar({ links, title }: { links: AppSidebarLink[]; title?: 
   const { can } = useSession();
   const visible = links.filter((l) => can(l.capability));
   return (
-    <aside aria-label={title ?? 'Module navigation'} className="flex w-full shrink-0 flex-col gap-1 border-r border-line bg-white px-2.5 py-4 md:w-44">
+    <aside aria-label={title ?? 'Module navigation'} className="flex w-full min-w-0 shrink-0 flex-col gap-1 border-b border-r-0 border-line bg-white px-2.5 py-3 md:w-44 md:border-b-0 md:border-r md:py-4">
       {title && <p className="px-2.5 pb-1.5 text-micro font-semibold uppercase tracking-wider text-muted">{title}</p>}
-      <ul className="space-y-0.5">
+      <ul className="flex gap-1 overflow-x-auto md:block md:space-y-0.5 md:overflow-visible">
         {visible.map((l) => (
-          <li key={l.to}>
+          <li key={l.to} className="shrink-0 md:shrink">
             <NavLink
               to={l.to}
               className={({ isActive }) =>

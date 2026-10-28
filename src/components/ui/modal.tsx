@@ -54,8 +54,8 @@ export function Modal({ open, title, description, onClose, children, footer, wid
 
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 px-4 pt-[12vh] pb-8" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId} className={`w-full ${width} rounded-card border border-line bg-white shadow-pop`}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-900/40 px-3 pt-[8vh] pb-6 sm:px-4 sm:pt-[12vh] sm:pb-8" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div ref={panelRef} role="dialog" aria-modal="true" aria-labelledby={titleId} className={`w-full min-w-0 max-w-[calc(100vw-1.5rem)] ${width} rounded-card border border-line bg-white shadow-pop sm:max-w-none`}>
         <header className="flex items-start justify-between gap-3 border-b border-line px-4 py-3">
           <div>
             <h2 id={titleId} className="text-[13px] font-semibold text-ink">{title}</h2>

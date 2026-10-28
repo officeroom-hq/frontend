@@ -55,7 +55,7 @@ export function AICopilotPanel({ className = '' }: { className?: string }) {
         </span>
       }
     >
-      <div className="flex gap-4 border-b border-line px-4" role="tablist">
+      <div className="flex gap-4 overflow-x-auto border-b border-line px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist">
         {COPILOT_TABS.map((t) => (
           <button
             key={t}

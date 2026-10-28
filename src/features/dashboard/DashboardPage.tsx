@@ -115,7 +115,7 @@ function WorkOverview() {
         )}
       </div>
       {totals && (
-        <div className="mt-3 grid grid-cols-4 divide-x divide-line rounded-lg border border-line">
+        <div className="mt-3 grid grid-cols-2 divide-x divide-line rounded-lg border border-line sm:grid-cols-4">
           {[
             { label: 'Tasks Executed', value: totals.tasks, color: 'text-blue-600' },
             { label: 'Files Analyzed', value: totals.files, color: 'text-green-600' },
@@ -242,7 +242,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-5">
+        <div className="mt-4 grid grid-cols-2 gap-3 [&>*:last-child:nth-child(odd)]:col-span-2 xl:grid-cols-5 xl:[&>*:last-child:nth-child(odd)]:col-span-1">
           {stats.loading && !stats.data && Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-[72px]" />)}
           {stats.data?.map((s) => (
             <StatCard key={s.id} label={s.label} value={s.value} change={s.change} changeNote={s.changeNote} icon={s.icon} tone={s.tone} sparkline={s.sparkline} />

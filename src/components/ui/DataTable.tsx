@@ -25,7 +25,7 @@ export function DataTable<T extends { id: string }>({
   emptyText?: string;
 }) {
   return (
-    <div className="overflow-x-auto">
+    <div className="max-w-full overflow-x-auto">
       <table className="w-full border-collapse text-left text-[11px]" style={{ minWidth }}>
         {caption && <caption className="sr-only">{caption}</caption>}
         <thead>

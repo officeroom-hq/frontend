@@ -5,7 +5,7 @@ import type { SidebarSection } from '../api/types';
 /** Left rail: sections of links. Links with a `to` route to that page, others are placeholders. */
 export function Sidebar({ sections, footer, className = '' }: { sections: SidebarSection[]; footer?: ReactNode; className?: string }) {
   return (
-    <aside className={`flex w-full shrink-0 flex-col gap-4 border-r border-line bg-white px-2.5 py-4 md:w-40 ${className}`}>
+    <aside className={`flex w-full min-w-0 shrink-0 flex-col gap-4 border-b border-r-0 border-line bg-white px-2.5 py-3 md:w-40 md:border-b-0 md:border-r md:py-4 ${className}`}>
       {sections.map((s) => (
         <div key={s.title ?? 'section'}>
           {s.title && <p className="px-2.5 pb-1.5 text-[9px] font-semibold uppercase tracking-wider text-muted">{s.title}</p>}

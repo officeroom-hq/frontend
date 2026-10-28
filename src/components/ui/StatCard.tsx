@@ -22,7 +22,7 @@ export function StatCard({ label, value, change, changeNote, icon, tone, sparkli
   const sign = change >= 0 ? '+' : '';
   const arrow = change >= 0 ? '↑' : '↓';
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-line bg-white p-3.5 shadow-card">
+    <div className="flex min-w-0 items-center gap-2 rounded-xl border border-line bg-white p-3 shadow-card sm:gap-3 sm:p-3.5">
       <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${TONE_TILE[tone]}`}>
         <Icon size={17} strokeWidth={2} aria-hidden="true" />
       </span>

@@ -18,7 +18,7 @@ const COLS = ['METRIC', 'ACTUAL (N)', 'TARGET (N)', 'VARIANCE (N)', 'VARIANCE (%
 function Ribbon({ active, onActive }: { active: string; onActive: (r: string) => void }) {
   return (
     <div className="border-b border-line bg-white">
-      <div className="flex gap-3 border-b border-line px-3 text-[11px]" role="tablist">
+      <div className="flex gap-3 overflow-x-auto border-b border-line px-3 text-[11px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" role="tablist">
         {RIBBON.map((r) => (
           <button key={r} role="tab" aria-selected={r === active} type="button" onClick={() => onActive(r)} className={`-mb-px border-b-2 py-1.5 ${r === active ? 'border-blue-600 font-medium text-blue-700' : 'border-transparent text-muted'}`}>
             {r}
@@ -87,7 +87,7 @@ function ExcelEditor() {
           </table>
         </div>
       )}
-      <div className="mt-auto flex items-center gap-1 border-t border-line bg-slate-50 px-2 py-1 text-[11px]">
+      <div className="mt-auto flex items-center gap-1 overflow-x-auto border-t border-line bg-slate-50 px-2 py-1 text-[11px]">
         {(w?.sheets ?? []).map((s) => (
           <button key={s} type="button" onClick={() => setSheet(s)} className={`rounded-t px-3 py-1 ${s === sheet ? 'bg-white font-medium text-blue-700 shadow-sm' : 'text-slate-600 hover:bg-white/70'}`}>{s}</button>
         ))}
