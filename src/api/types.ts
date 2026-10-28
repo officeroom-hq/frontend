@@ -522,8 +522,10 @@ export interface CoreApi {
 export interface OfficeApi {
   // auth
   signIn(email: string, password: string): Promise<User>;
-  register(input: { fullName: string; email: string; password: string; businessName: string }): Promise<User>;
+  register(input: { fullName: string; email: string; password: string; businessName: string; industry: string }): Promise<User>;
   requestPasswordReset(email: string): Promise<void>;
+  resetPassword(input: { token: string; email: string; password: string }): Promise<void>;
+  logout(): Promise<void>;
 
   // business & setup wizard
   getBusiness(): Promise<Business>;

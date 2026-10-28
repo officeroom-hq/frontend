@@ -77,7 +77,7 @@ export function MessagingPage() {
               <section aria-label={`Conversation ${current?.name ?? ''}`} className="flex min-w-0 flex-1 flex-col">
                 <header className="flex items-center justify-between border-b border-line pb-2">
                   <h2 className="text-[13px] font-semibold text-ink">{current?.kind === 'channel' ? '#' : ''}{current?.name}</h2>
-                  <span className="text-micro text-muted">Signed in as {user.fullName}</span>
+                  <span className="text-micro text-muted">Signed in as {user?.fullName}</span>
                 </header>
                 <div className="flex-1 space-y-3 overflow-y-auto py-3" aria-live="polite">
                   {messages.loading ? <LoadingState rows={4} label="Loading messages" />

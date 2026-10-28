@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { ChevronDown, Bell, HelpCircle, LayoutGrid, MessageSquare, Plus, Search, Star } from 'lucide-react';
 import { NAV_ITEMS } from './nav';
 import { useSession } from '../lib/session';
+import { useNavigate } from 'react-router-dom';
 import { DevRoleSwitcher } from './DevRoleSwitcher';
 
 export function Logo() {
@@ -14,7 +15,9 @@ export function Logo() {
 }
 
 export function TopNav({ searchPlaceholder = 'Search files, tasks, people, workflows...' }: { searchPlaceholder?: string }) {
-  const { user, can } = useSession();
+  const { user, can, signOut } = useSession();
+  const navigate = useNavigate();
+  if (!user) return null;
   const items = NAV_ITEMS.filter((i) => !i.capability || can(i.capability));
   return (
     <header className="sticky top-0 z-30 flex h-12 min-w-0 items-center gap-2 bg-nav px-3 text-white shadow-sm md:gap-3">
@@ -67,6 +70,16 @@ export function TopNav({ searchPlaceholder = 'Search files, tasks, people, workf
             <p className="text-[11px] font-semibold">{user.fullName}</p>
             <p className="text-[9px] text-blue-200">{user.role}</p>
           </div>
+          <button
+            type="button"
+            onClick={async () => {
+              await signOut();
+              navigate('/login', { replace: true });
+            }}
+            className="rounded-md px-1.5 py-0.5 text-[10px] font-medium text-blue-100 hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+          >
+            Sign out
+          </button>
         </div>
       </div>
     </header>

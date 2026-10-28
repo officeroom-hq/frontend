@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../../api';
+import { useSession } from '../../lib/session';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/field';
 import { FormAlert } from '../../components/ui/states';
@@ -15,6 +16,9 @@ function errorMessage(e: unknown, fallback: string): string {
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { signedIn } = useSession();
+  const from = (location.state as { from?: string } | null)?.from ?? '/dashboard';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<Errors>({});
@@ -32,8 +36,8 @@ export function LoginPage() {
     setBusy(true);
     setFormError(undefined);
     try {
-      await api.signIn(email, password);
-      navigate('/dashboard');
+      signedIn(await api.signIn(email, password));
+      navigate(from, { replace: true });
     } catch (err) {
       setFormError(errorMessage(err, 'Sign in failed. Try again.'));
     } finally {
@@ -62,7 +66,8 @@ export function LoginPage() {
 
 export function RegisterPage() {
   const navigate = useNavigate();
-  const [fields, setFields] = useState({ fullName: '', businessName: '', email: '', password: '', confirm: '' });
+  const { signedIn } = useSession();
+  const [fields, setFields] = useState({ fullName: '', businessName: '', industry: '', email: '', password: '', confirm: '' });
   const [errors, setErrors] = useState<Errors>({});
   const [formError, setFormError] = useState<string>();
   const [busy, setBusy] = useState(false);
@@ -75,6 +80,8 @@ export function RegisterPage() {
     if (n) next.fullName = n;
     const b = requiredText(fields.businessName, 'Business name');
     if (b) next.businessName = b;
+    const ind = requiredText(fields.industry, 'Industry');
+    if (ind) next.industry = ind;
     if (!isEmail(fields.email)) next.email = 'Enter a valid email address.';
     if (fields.password.length < 8) next.password = 'Use at least 8 characters.';
     if (fields.confirm !== fields.password) next.confirm = 'Passwords do not match.';
@@ -83,8 +90,8 @@ export function RegisterPage() {
     setBusy(true);
     setFormError(undefined);
     try {
-      await api.register({ fullName: fields.fullName, email: fields.email, password: fields.password, businessName: fields.businessName });
-      navigate('/setup');
+      signedIn(await api.register({ fullName: fields.fullName, email: fields.email, password: fields.password, businessName: fields.businessName, industry: fields.industry }));
+      navigate('/setup', { replace: true });
     } catch (err) {
       setFormError(errorMessage(err, 'Could not create the account. Try again.'));
     } finally {
@@ -102,6 +109,7 @@ export function RegisterPage() {
         {formError && <FormAlert>{formError}</FormAlert>}
         <Input label="Full name" autoComplete="name" value={fields.fullName} onChange={set('fullName')} error={errors.fullName} placeholder="Chinedu Okafor" />
         <Input label="Business name" value={fields.businessName} onChange={set('businessName')} error={errors.businessName} placeholder="Adeola Spices & Foods Ltd" />
+        <Input label="Industry" value={fields.industry} onChange={set('industry')} error={errors.industry} placeholder="Food" />
         <Input label="Work email" type="email" autoComplete="email" value={fields.email} onChange={set('email')} error={errors.email} placeholder="you@company.ng" />
         <Input label="Password" type="password" autoComplete="new-password" value={fields.password} onChange={set('password')} error={errors.password} hint="At least 8 characters." />
         <Input label="Confirm password" type="password" autoComplete="new-password" value={fields.confirm} onChange={set('confirm')} error={errors.confirm} />
@@ -148,6 +156,60 @@ export function ForgotPasswordPage() {
           {error && <FormAlert>{error}</FormAlert>}
           <Input label="Work email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.ng" />
           <Button type="submit" loading={busy} className="w-full">Send reset link</Button>
+        </form>
+      )}
+    </AuthShell>
+  );
+}
+
+export function ResetPasswordPage() {
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
+  const [fields, setFields] = useState({ email: params.get('email') ?? '', token: params.get('token') ?? '', password: '', confirm: '' });
+  const [errors, setErrors] = useState<Errors>({});
+  const [formError, setFormError] = useState<string>();
+  const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const set = (k: keyof typeof fields) => (e: React.ChangeEvent<HTMLInputElement>) => setFields((f) => ({ ...f, [k]: e.target.value }));
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const next: Errors = {};
+    if (!isEmail(fields.email)) next.email = 'Enter a valid email address.';
+    const t = requiredText(fields.token, 'Reset token');
+    if (t) next.token = t;
+    if (fields.password.length < 8) next.password = 'Use at least 8 characters.';
+    if (fields.confirm !== fields.password) next.confirm = 'Passwords do not match.';
+    setErrors(next);
+    if (Object.keys(next).length) return;
+    setBusy(true);
+    setFormError(undefined);
+    try {
+      await api.resetPassword({ token: fields.token.trim(), email: fields.email, password: fields.password });
+      setDone(true);
+    } catch (err) {
+      setFormError(errorMessage(err, 'Could not reset the password. Try again.'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <AuthShell
+      title="Choose a new password"
+      subtitle="Paste the reset token from your email and pick a new password."
+      footer={<Link to="/login" className="font-medium text-blue-700 hover:underline">Back to sign in</Link>}
+    >
+      {done ? (
+        <FormAlert tone="success">Password updated. <button type="button" onClick={() => navigate('/login')} className="font-medium underline">Sign in</button></FormAlert>
+      ) : (
+        <form onSubmit={submit} noValidate className="space-y-3">
+          {formError && <FormAlert>{formError}</FormAlert>}
+          <Input label="Work email" type="email" autoComplete="email" value={fields.email} onChange={set('email')} error={errors.email} placeholder="you@company.ng" />
+          <Input label="Reset token" value={fields.token} onChange={set('token')} error={errors.token} />
+          <Input label="New password" type="password" autoComplete="new-password" value={fields.password} onChange={set('password')} error={errors.password} hint="At least 8 characters." />
+          <Input label="Confirm password" type="password" autoComplete="new-password" value={fields.confirm} onChange={set('confirm')} error={errors.confirm} />
+          <Button type="submit" loading={busy} className="w-full">Update password</Button>
         </form>
       )}
     </AuthShell>

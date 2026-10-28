@@ -131,6 +131,8 @@ export const officeMockApi: OfficeApi = {
   signIn: (email) => (email.includes('@') ? delay(currentUser) : fail('Enter a valid email address.')),
   register: (input) => delay<User>({ ...currentUser, fullName: input.fullName, email: input.email }),
   requestPasswordReset: (email) => (email.includes('@') ? delay<void>(undefined) : fail('Enter a valid email address.')),
+  resetPassword: () => delay<void>(undefined),
+  logout: () => delay<void>(undefined),
 
   // business & setup
   getBusiness: () => delay(BUSINESS),
